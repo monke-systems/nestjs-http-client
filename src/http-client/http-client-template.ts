@@ -1,6 +1,5 @@
 import * as http from 'node:http';
 import * as https from 'node:https';
-import { performance } from 'perf_hooks';
 import { CounterType, HistogramType } from '@monkee/small-standards';
 import type {
   AxiosInstance,
@@ -42,12 +41,14 @@ export class HttpClientTemplate {
   async request<T = any>(
     config: HttpClientRequestConfig,
   ): Promise<AxiosResponse<T>> {
-    const start = performance.now();
+    const start = Date.now();
 
     try {
       const response = await this.httpClient.request<T>(config);
 
-      this.requestTime?.observe(performance.now() - start, {
+      const end = Date.now();
+
+      this.requestTime?.observe(end - start / 1000, {
         id: this.id,
         method: config.method?.toUpperCase() ?? 'unknown',
         uri: config.url ?? 'unknown',
