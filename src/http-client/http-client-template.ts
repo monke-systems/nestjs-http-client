@@ -48,7 +48,7 @@ export class HttpClientTemplate {
 
       const end = Date.now();
 
-      this.requestTime?.observe(end - start / 1000, {
+      this.requestTime?.observe((end - start) / 1000, {
         id: this.id,
         method: config.method?.toUpperCase() ?? 'unknown',
         uri: config.url ?? 'unknown',
