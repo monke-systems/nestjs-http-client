@@ -46,9 +46,9 @@ export class HttpClientTemplate {
     try {
       const response = await this.httpClient.request<T>(config);
 
-      const end = Date.now();
+      const duration = (Date.now() - start) / 1000;
 
-      this.requestTime?.observe((end - start) / 1000, {
+      this.requestTime?.observe(duration, {
         id: this.id,
         method: config.method?.toUpperCase() ?? 'unknown',
         uri: config.url ?? 'unknown',
@@ -57,6 +57,8 @@ export class HttpClientTemplate {
 
       return response;
     } catch (error) {
+      const duration = (Date.now() - start) / 1000;
+
       let status = 'unknown';
       let code = 'unknown';
 
@@ -76,7 +78,8 @@ export class HttpClientTemplate {
         ...commonLabels,
         code,
       });
-      this.requestTime?.observe(Date.now() - start, commonLabels);
+
+      this.requestTime?.observe(duration, commonLabels);
 
       throw error;
     }
